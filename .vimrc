@@ -2,14 +2,6 @@
 " Use indentation for folds
 syntax enable           " enable syntax processing
 set foldmethod=indent
-set background=dark
-colorscheme wombat256mod 
-if &term =~ '256color'
-  " disable Background Color Erase (BCE) so that color schemes
-  " render properly when inside 256-color tmux and GNU screen.
-  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-  set t_ut=
-endif
 set foldnestmax=5
 set foldlevelstart=99
 set foldcolumn=0
@@ -76,20 +68,12 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'vim-scripts/wombat256.vim'
 
 " Support bundles
-" Slime {{{
 Plugin 'jgdavey/tslime.vim'
-vmap <silent> <Leader>rs <Plug>SendSelectionToTmux
-nmap <silent> <Leader>rs <Plug>NormalModeSendToTmux
-nmap <silent> <Leader>rv <Plug>SetTmuxVars
-" }}}
 Plugin 'Shougo/vimproc.vim', { 'do': 'make' }
 Plugin 'ervandew/supertab'
 Plugin 'benekastah/neomake'
 
 Plugin 'moll/vim-bbye'
-" close buffer without messing up window layout
-:nnoremap <Leader>q :Bdelete<CR> 
-
 Plugin 'nathanaelkane/vim-indent-guides'
 
 " Git
@@ -99,20 +83,8 @@ Plugin 'vim-scripts/gitignore'
 
 " Bars, panels, and files
 Plugin 'scrooloose/nerdtree'
-" Plugin 'bling/vim-airline'
 " Fuzzy find files
 Plugin 'ctrlpvim/ctrlp.vim'
-nnoremap <silent> <Leader><space> :CtrlP<CR>
-let g:ctrlp_max_files=0
-let g:ctrlp_show_hidden=1
-" Sane Ignore For ctrlp
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\.git$\|\.hg$\|\.Trash$\|\.svn$\|\.yardoc\|public\/images\|public\/system\|data\|log\|tmp$',
-  \ 'file': '\.exe$\|\.so$\|\.dat$'
-  \ }
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_user_command = ['.git/', 'git ls-files --cached --others  --exclude-standard %s']
-" }}}
 
 Plugin 'majutsushi/tagbar'
 
@@ -120,8 +92,6 @@ Plugin 'majutsushi/tagbar'
 Plugin 'vim-scripts/Align'
 
 Plugin 'simnalamburt/vim-mundo'
-" Show undo tree
-nmap <silent> <leader>u :MundoToggle<CR>
 
 Plugin 'tpope/vim-commentary'
 Plugin 'godlygeek/tabular'
@@ -130,14 +100,9 @@ Plugin 'easymotion/vim-easymotion'
 
 " Allow pane movement to jump out of vim into tmux
 Plugin 'christoomey/vim-tmux-navigator'
-" Manually create key mappings (to avoid rebinding C-\)
-let g:tmux_navigator_no_mappings = 1
 
-nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
-
+" Python
+Plugin 'davidhalter/jedi-vim'
 " Haskell
 " Plugin 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 " Plugin 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
@@ -149,6 +114,9 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 call vundle#end()
 filetype plugin indent on
 " }}}
+
+source $HOME/.vim/config/plugin.vimrc
+source $HOME/.vim/config/keys.vimrc
 
 " VIM user interface {{{
 
@@ -205,13 +173,6 @@ set mat=2
 set noerrorbells
 set vb t_vb=
 
-if &term =~ '256color'
-  " disable Background Color Erase (BCE) so that color schemes
-  " render properly when inside 256-color tmux and GNU screen.
-  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-  set t_ut=
-endif
-
 " Force redraw
 map <silent> <leader>r :redraw!<CR>
 
@@ -227,6 +188,14 @@ set mouse=a
 
 " Colors and Fonts {{{
 
+set background=dark
+colorscheme wombat256mod 
+if &term =~ '256color'
+  " disable Background Color Erase (BCE) so that color schemes
+  " render properly when inside 256-color tmux and GNU screen.
+  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+  set t_ut=
+endif
 " Use pleasant but very visible search hilighting
 hi Search ctermfg=white ctermbg=173 cterm=none guifg=#ffffff guibg=#e5786d gui=none
 hi! link Visual Search
@@ -258,11 +227,9 @@ set ffs=unix,dos,mac
 
 " Use large font by default in MacVim
 set gfn=Monaco:h19
-
 " }}}
 
 " Files, backups and undo {{{
-
 " Turn backup off, since most stuff is in Git anyway...
 set nobackup
 set nowb
@@ -300,14 +267,8 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
-
-" Copy and paste to os clipboard
-nmap <leader>y "*y
-vmap <leader>y "*y
-vmap <leader>d "*d
-nmap <leader>p "*p
-vmap <leader>p "*p
 " }}}
+
 " Visual mode related {{{
 
 " Visual mode pressing * or # searches for the current selection
@@ -367,9 +328,6 @@ nnoremap <leader>bo <c-w>o
 
 " delete buffer without closing pane
 noremap <leader>bd :Bd<cr>
-
-" fuzzy find buffers
-noremap <leader>b<space> :CtrlPBuffer<cr>
 
 " Neovim terminal configurations
 if has('nvim')
@@ -440,88 +398,3 @@ function! VisualSelection(direction, extra_filter) range
 endfunction
 
 " }}}
-
-" NERDTree {{{
-
-" Close nerdtree after a file is selected
-let NERDTreeQuitOnOpen = 1
-
-function! IsNERDTreeOpen()
-  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
-endfunction
-
-function! ToggleFindNerd()
-  if IsNERDTreeOpen()
-    exec ':NERDTreeToggle'
-  else
-    exec ':NERDTreeFind'
-  endif
-endfunction
-
-" If nerd tree is closed, find current file, if open, close it
-nmap <silent> <leader>f <ESC>:call ToggleFindNerd()<CR>
-nmap <silent> <leader>F <ESC>:NERDTreeToggle<CR>
-
-" }}}
-
-" Alignment {{{
-
-" Stop Align plugin from forcing its mappings on us
-let g:loaded_AlignMapsPlugin=1
-" Align on equal signs
-map <Leader>a= :Align =<CR>
-" Align on commas
-map <Leader>a, :Align ,<CR>
-" Align on pipes
-map <Leader>a<bar> :Align <bar><CR>
-" Prompt for align character
-map <leader>ap :Align
-" }}}
-
-" Tags {{{
-
-map <leader>tt :TagbarToggle<CR>
-
-set tags=tags;/
-set cst
-set csverb
-
-" }}}
-
-" Git {{{
-
-let g:extradite_width = 60
-" Hide messy Ggrep output and copen automatically
-function! NonintrusiveGitGrep(term)
-  execute "copen"
-  " Map 't' to open selected item in new tab
-  execute "nnoremap <silent> <buffer> t <C-W><CR><C-W>T"
-  execute "silent! Ggrep " . a:term
-  execute "redraw!"
-endfunction
-
-command! -nargs=1 GGrep call NonintrusiveGitGrep(<q-args>)
-nmap <leader>gs :Gstatus<CR>
-nmap <leader>gg :copen<CR>:GGrep 
-nmap <leader>gl :Extradite!<CR>
-nmap <leader>gd :Gdiff<CR>
-nmap <leader>gb :Gblame<CR>
-
-function! CommittedFiles()
-  " Clear quickfix list
-  let qf_list = []
-  " Find files committed in HEAD
-  let git_output = system("git diff-tree --no-commit-id --name-only -r HEAD\n")
-  for committed_file in split(git_output, "\n")
-    let qf_item = {'filename': committed_file}
-    call add(qf_list, qf_item)
-  endfor
-  " Fill quickfix list with them
-  call setqflist(qf_list)
-endfunction
-
-" Show list of last-committed files
-nnoremap <silent> <leader>g? :call CommittedFiles()<CR>:copen<CR>
-
-" }}}
-
