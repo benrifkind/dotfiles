@@ -156,10 +156,10 @@ __conda_setup="$('/Users/benjaminrifkind/miniconda3/bin/conda' 'shell.zsh' 'hook
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/benjaminrifkind/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/benjaminrifkind/miniconda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/miniconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/benjaminrifkind/miniconda3/bin:$PATH"
+        export PATH="$HOME/miniconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -173,5 +173,5 @@ unset __conda_setup
 eval "$(direnv hook zsh)"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/benjaminrifkind/.sdkman"
-[[ -s "/Users/benjaminrifkind/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/benjaminrifkind/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
